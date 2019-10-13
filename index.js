@@ -15,7 +15,7 @@ wordArray = wordArray.sort();
 
 // pre-optimize:  longest set of more than one words is at length of 27.
 // let longest_word = 27;
-let longest_word = 5;
+let longest_word = 27;
 
 const conditionalAccessAndAppend = (input_array, x, y, target) => {
   // our 3d-ness might not be 3d enough yet, too.
@@ -78,9 +78,9 @@ const generatePossibleRectangles = (possible_word_length, result_rectangle) => {
 }
 
 const getStartRowIndex = (possible_rectangles) => {
-  for (var i = 0; i < possible_rectangles[0].length; i++) {
-    if (typeof (possible_rectangles[0][i]) === "object") {
-      return i;
+  for (var l = 0; l < possible_rectangles[0].length; l++) {
+    if (typeof (possible_rectangles[0][l]) === "object") {
+      return l;
     }
   }
 
@@ -105,10 +105,10 @@ const generateWordRectangle = (possible_rectangles, x_word_array, y_word_array, 
   this_row_words = this_row_words.filter(word => {
     var word_letters = [...word]
 
-    for (i = 0; i < word_letters.length; i++) {
-      var word_letter = word_letters[i];
+    for (k = 0; i < word_letters.length; k++) {
+      var word_letter = word_letters[k];
 
-      if (!testing_row[i].includes(word_letter)) {
+      if (!testing_row[k].includes(word_letter)) {
         return false;
       }
     }
@@ -122,8 +122,8 @@ const generateWordRectangle = (possible_rectangles, x_word_array, y_word_array, 
   }
 
   // for each word that will fit in this row...
-  for (i = 0; i < this_row_words.length; i++) {
-    row_candidate = this_row_words[i]
+  for (j = 0; j < this_row_words.length; j++) {
+    row_candidate = this_row_words[j]
 
     // filter out our possible letters in the next rows based on the words remaining in each column.
     row_candidate_letters = [...row_candidate];
@@ -165,6 +165,7 @@ const generateWordRectangle = (possible_rectangles, x_word_array, y_word_array, 
 }
 
 for (word_length = longest_word; word_length > 2; word_length--) {
+  // console.log(word_length + " ACROSS")
   // create an array of our possible seed words of this current length.
   let x_word_array = wordArray.filter(word => word.length === word_length);
 
@@ -174,27 +175,31 @@ for (word_length = longest_word; word_length > 2; word_length--) {
     continue;
   }
   // for every word in this list — our seed word...
-  x_word_array.forEach(seed_word => {
-    // generate our 3d array of locked-in rectangle.
-    result_rectangle = [...seed_word].map(seed_word_letter => [seed_word_letter])
+  // refactor this to create a dictionary of long words
+  for (y_word_length = word_length; y_word_length > 2; y_word_length--) {
+    // console.log(y_word_length + " DOWN")
+    // console.log(Math.pow(x_word_array.length, word_length) + ' permutations at this stage')
+    x_word_array.forEach(seed_word => {
+      // generate our 3d array of locked-in rectangle.
+      result_rectangle = [...seed_word].map(seed_word_letter => [seed_word_letter])
 
-    // are there words of equal length that exist which start with our first n letters?  If not, no rectangle can exist.
-    // start with the largest possible equal length.
-    for (possible_word_length = longest_word; possible_word_length > 1; possible_word_length--) {
+      // are there words of equal length that exist which start with our first n letters?  If not, no rectangle can exist.
+      // start with the largest possible equal length.
+      // for (possible_word_length = longest_word; possible_word_length > 2; possible_word_length--) {
       // find any permissable letters in a grid for this length
-      var possible_rectangles = generatePossibleRectangles(possible_word_length, result_rectangle);
+      var possible_rectangles = generatePossibleRectangles(y_word_length, result_rectangle);
 
       // step down if there's not a possible rectangle for this word length.
       if (!possible_rectangles) {
-        continue;
+        return;
       }
 
       // this is not great design, but we need to generate our y word array based on the length of our possible rectangle...
-      y_word_array_len = possible_rectangles[0].length;
-      y_word_array = wordArray.filter(word => word.length === y_word_array_len)
+      // y_word_array_len = possible_rectangles[0].length;
+      y_word_array = wordArray.filter(word => word.length === y_word_length)
 
       // now we have a single possible rectangle, it's time to see if there's a series of words that will fit in it.
-      var word_rectangle = generateWordRectangle(possible_rectangles, x_word_array, y_word_array, possible_word_length);
+      var word_rectangle = generateWordRectangle(possible_rectangles, x_word_array, y_word_array, y_word_length);
 
       // does a grid exist which satisfies this set of letters? if so, it's one of the longest grids.
       if (word_rectangle) {
@@ -203,7 +208,6 @@ for (word_length = longest_word; word_length > 2; word_length--) {
         })
         console.log("---------")
       }
-    }
-  })
-
+    })
+  }
 }
