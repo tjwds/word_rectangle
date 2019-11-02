@@ -6,7 +6,7 @@
 // import word list
 
 const RECT_WIDTH = 16;
-const RECT_HEIGHT = 12;
+const RECT_HEIGHT = 11;
 const RESTART_LENGTH = 0; // be sure to use number reported in console (1-indexed)
 
 const fs = require('fs');
@@ -184,11 +184,16 @@ for (word_length = longest_word; word_length > 2; word_length--) {
     console.log(y_word_length + " DOWN")
     // console.log(Math.pow(x_word_array.length, word_length) + ' permutations at this stage')
     x_word_array.forEach((seed_word, seed_word_index) => {
-      if (seed_word_index < RESTART_LENGTH) { // break out if needing to restart in middle
+      // enable restarting
+      if (
+        word_length === RECT_WIDTH &&
+        y_word_length === RECT_HEIGHT &&
+        seed_word_index < RESTART_LENGTH
+      ) {
         return;
       }
       if (seed_word_index % 1 === 0) {
-        console.log((seed_word_index + 1) + ' / ' + (x_word_array.length + 1) + ': ' + seed_word);
+        console.log((seed_word_index + 1) + ' / ' + x_word_array.length + ': ' + seed_word);
       };
 
       // generate our 3d array of locked-in rectangle.
