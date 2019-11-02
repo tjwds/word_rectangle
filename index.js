@@ -7,7 +7,7 @@
 
 const RECT_WIDTH = 16;
 const RECT_HEIGHT = 12;
-const RESTART_LENGTH = 0;
+const RESTART_LENGTH = 0; // be sure to use number reported in console (1-indexed)
 
 const fs = require('fs');
 
@@ -188,7 +188,7 @@ for (word_length = longest_word; word_length > 2; word_length--) {
         return;
       }
       if (seed_word_index % 1 === 0) {
-        console.log(seed_word_index + ' / ' + x_word_array.length + ': ' + seed_word);
+        console.log((seed_word_index + 1) + ' / ' + (x_word_array.length + 1) + ': ' + seed_word);
       };
 
       // generate our 3d array of locked-in rectangle.
