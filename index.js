@@ -218,6 +218,7 @@ for (word_length = longest_word; word_length > 2; word_length--) {
           console.log(word.join(''))
         })
         console.log("---------")
+        process.exit()
       }
     })
   }
