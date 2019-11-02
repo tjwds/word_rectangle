@@ -5,6 +5,10 @@
 
 // import word list
 
+const RECT_WIDTH = 16;
+const RECT_HEIGHT = 12;
+const RESTART_LENGTH = 0;
+
 const fs = require('fs');
 
 // Returns the path to the word list which is separated by `\n`
@@ -15,7 +19,7 @@ wordArray = wordArray.sort();
 
 // pre-optimize:  longest set of more than one words is at length of 27.
 // let longest_word = 27;
-let longest_word = 27;
+let longest_word = RECT_WIDTH;
 
 const conditionalAccessAndAppend = (input_array, x, y, target) => {
   // our 3d-ness might not be 3d enough yet, too.
@@ -165,7 +169,7 @@ const generateWordRectangle = (possible_rectangles, x_word_array, y_word_array, 
 }
 
 for (word_length = longest_word; word_length > 2; word_length--) {
-  // console.log(word_length + " ACROSS")
+  console.log(word_length + " ACROSS")
   // create an array of our possible seed words of this current length.
   let x_word_array = wordArray.filter(word => word.length === word_length);
 
@@ -176,10 +180,17 @@ for (word_length = longest_word; word_length > 2; word_length--) {
   }
   // for every word in this list — our seed word...
   // refactor this to create a dictionary of long words
-  for (y_word_length = word_length; y_word_length > 2; y_word_length--) {
-    // console.log(y_word_length + " DOWN")
+  for (y_word_length = Math.min(word_length, RECT_HEIGHT); y_word_length > 2; y_word_length--) {
+    console.log(y_word_length + " DOWN")
     // console.log(Math.pow(x_word_array.length, word_length) + ' permutations at this stage')
-    x_word_array.forEach(seed_word => {
+    x_word_array.forEach((seed_word, seed_word_index) => {
+      if (seed_word_index < RESTART_LENGTH) { // break out if needing to restart in middle
+        return;
+      }
+      if (seed_word_index % 1 === 0) {
+        console.log(seed_word_index + ' / ' + x_word_array.length + ': ' + seed_word);
+      };
+
       // generate our 3d array of locked-in rectangle.
       result_rectangle = [...seed_word].map(seed_word_letter => [seed_word_letter])
 
